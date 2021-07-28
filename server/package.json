@@ -1,0 +1,23 @@
+{
+  "name": "ws-chat-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "Scot Hampel <scot@scothampel.com> (https://scothampel.com)",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-ws": "^5.0.2",
+    "helmet": "^4.6.0",
+    "path": "^0.12.7"
+  }
+}
