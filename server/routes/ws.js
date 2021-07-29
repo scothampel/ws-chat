@@ -9,6 +9,8 @@ let rooms = {};
 // Websocket endpoint, room id parameter
 router.ws('/:id', (ws, req) => {
   const { id } = req.params;
+  // Allow user to be set by first message
+  let user = null;
   // Check if room exists
   if (rooms[id]) {
     ws.send(JSON.stringify({ message: `Room exists. Identifier: ${id}` }));
@@ -36,13 +38,14 @@ router.ws('/:id', (ws, req) => {
 
   // Message handler
   ws.on('message', msg => {
-    // Show room messages if client sends 'msg'
-    if (msg === 'msg') {
-      ws.send(JSON.stringify(room.messages));
+    // First message is username
+    if (user === null) {
+      user = msg
     }
-    // Push message to messages array
+    // Push message to messages array and send list back
     else {
-      room.messages.push(msg);
+      room.messages.push({ user, message: msg });
+      ws.send(JSON.stringify(room.messages));
     }
   });
 
