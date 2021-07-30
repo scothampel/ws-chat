@@ -8,7 +8,9 @@ export default function Room({ user, setUser, setJoined }) {
   const { id } = useParams();
 
   useEffect(() => {
-    const wsUrl = window.location.href.replace('http', 'ws');
+    setJoined(false)
+
+    const wsUrl = window.location.href.replace('http', 'ws').replace('3000', '3001');
 
     if (user) {
       wsRef.current = new WebSocket(wsUrl);
@@ -18,7 +20,13 @@ export default function Room({ user, setUser, setJoined }) {
       };
 
       wsRef.current.onmessage = msg => {
-        setMessages(prev => [...prev, msg]);
+        const data = JSON.parse(msg.data);
+        if (data.user) {
+          setMessages(prev => [...prev, data]);
+        }
+        else {
+          setMessages(data);
+        }
       };
 
       wsRef.current.onclose = e => {
@@ -35,11 +43,16 @@ export default function Room({ user, setUser, setJoined }) {
         wsRef.current.close();
       }
     };
-  }, [user])
+  }, [user, setJoined])
 
   const handleSubmit = e => {
     e.preventDefault();
     setUser(e.target[0].value);
+  }
+
+  const handleClick = e => {
+    e.preventDefault()
+    wsRef.current.send(e.target[0].value)
   }
 
   return (
@@ -55,7 +68,12 @@ export default function Room({ user, setUser, setJoined }) {
         </form>
       }
       {
-
+        user &&
+        <form onSubmit={handleClick}>
+          <input type='text' className='form-control' id='msg' required />
+          <button type='submit' className='btn btn-success' >Send</button>
+          {JSON.stringify(messages)}
+        </form>
       }
     </div>
   );
