@@ -42,7 +42,7 @@ router.ws('/:id', (ws, req) => {
     if (user === null) {
       // Check if username does not exist
       // Checks messages instead of clients so username can't be "spoofed" or stolen
-      if (room.messages.filter(message => message.user === user).length === 0) {
+      if (room.messages.filter(message => message.user === msg).length === 0) {
         // Store username
         user = msg
         room.clients[clientIndex].user = msg;
