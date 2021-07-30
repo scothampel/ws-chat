@@ -11,7 +11,8 @@ export default function Room({ user, setUser, setJoined }) {
     // Allow room changes
     setJoined(false)
     // Formatted webSocket url
-    const wsUrl = window.location.href.replace('http', 'ws').replace('3000', '3001');
+    // Replace for dev, shouldn't have any effect in prod
+    const wsUrl = window.location.href.replace('http', 'ws').replace(':3000', ':3001');
 
     // Check if username is set
     if (user) {
