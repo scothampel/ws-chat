@@ -1,4 +1,4 @@
-.room .messages {
+.room .messages .card-body {
   height: 50vh;
   overflow-y: auto;
 }

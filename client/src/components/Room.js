@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import '../styles/Room.css';
 
 export default function Room({ user, setUser, setJoined }) {
   const [messages, setMessages] = useState([]);
   const wsRef = useRef(null);
+  const { id } = useParams();
 
   useEffect(() => {
     // Allow room changes
@@ -26,7 +28,7 @@ export default function Room({ user, setUser, setJoined }) {
         // All messages are JSON encoded
         const data = JSON.parse(msg.data);
         // Message card element
-        const messageCard = document.querySelector('.messages');
+        const messageCard = document.querySelector('.messages .card-body');
         // TODO: Maybe make switch
         // Check for new message, append to old messages
         if (data.type === 'message') {
@@ -36,13 +38,13 @@ export default function Room({ user, setUser, setJoined }) {
           setMessages(prev => [...prev, data]);
 
           //only change scroll pos if user hasn't scrolled to another pos
-          if (shouldScroll) messageCard.scrollTo({top: messageCard.scrollHeight});
+          if (shouldScroll) messageCard.scrollTo({ top: messageCard.scrollHeight });
         }
         // Room exists already
         else if (!data.type) {
           setMessages(data);
           // Scroll to most recent messages
-          messageCard.scrollTo({top: messageCard.scrollHeight});
+          messageCard.scrollTo({ top: messageCard.scrollHeight });
         }
         // TODO: Handle errors and info type
       };
@@ -94,6 +96,9 @@ export default function Room({ user, setUser, setJoined }) {
         user &&
         <div className='col-md-6 offset-md-3'>
           <div className='card messages mb-3'>
+            <div className="card-header">
+              <b>Room:</b> {id}
+            </div>
             <div className="card-body">
               {messages.map((val, index) => {
                 if (val.user === user) {
