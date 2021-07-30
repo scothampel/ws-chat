@@ -78,6 +78,8 @@ export default function Room({ user, setUser, setJoined }) {
   const handleSubmitMsg = e => {
     e.preventDefault()
     wsRef.current.send(e.target[0].value);
+    // Scroll to bottom
+    document.querySelector('.messages .card-body').scrollTo({ top: document.querySelector('.messages .card-body').scrollHeight });
   }
 
   return (
