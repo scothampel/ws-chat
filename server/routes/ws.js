@@ -13,7 +13,7 @@ router.ws('/:id', (ws, req) => {
   let user = null;
   // Check if room exists
   if (rooms[id]) {
-    ws.send(JSON.stringify({ message: `Room exists. Identifier: ${id}` }));
+    ws.send(JSON.stringify({ type: 'exists', message: `Room exists. Identifier: ${id}` }));
   }
   else {
     // Check if max rooms reached
@@ -23,11 +23,11 @@ router.ws('/:id', (ws, req) => {
         ...rooms,
         [id]: { messages: [], clients: [] }
       }
-      ws.send(JSON.stringify({ message: `Room created. Identifier: ${id}` }))
+      ws.send(JSON.stringify({ type: 'info', message: `Room created. Identifier: ${id}` }))
     }
     // Max rooms already reached
     else {
-      ws.send(JSON.stringify({ error: 'Maximum number of rooms reached' }));
+      ws.send(JSON.stringify({ type: 'info', error: 'Maximum number of rooms reached' }));
       ws.close();
     }
   }
@@ -49,7 +49,7 @@ router.ws('/:id', (ws, req) => {
       // Push message to array
       room.messages.push({ user, message: msg });
       // Send message to all clients
-      room.clients.forEach(({ socket }) => socket.send(JSON.stringify({ user, message: msg })));
+      room.clients.forEach(({ socket }) => socket.send(JSON.stringify({ type: 'message', user, message: msg })));
     }
   });
 
