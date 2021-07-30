@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import '../styles/Room.css';
 
 export default function Room({ user, setUser, setJoined }) {
   const [messages, setMessages] = useState([]);
   const wsRef = useRef(null);
-  const { id } = useParams();
 
   useEffect(() => {
     // Allow room changes
