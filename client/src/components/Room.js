@@ -32,7 +32,7 @@ export default function Room({ user, setUser, setJoined }) {
           setMessages(prev => [...prev, data]);
         }
         // Room exists already
-        else if (data.type === 'exists') {
+        else if (!data.type) {
           setMessages(data);
         }
         // TODO: Handle errors and info type
