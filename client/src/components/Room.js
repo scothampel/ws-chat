@@ -25,14 +25,24 @@ export default function Room({ user, setUser, setJoined }) {
       wsRef.current.onmessage = msg => {
         // All messages are JSON encoded
         const data = JSON.parse(msg.data);
+        // Message card element
+        const messageCard = document.querySelector('.messages');
         // TODO: Maybe make switch
         // Check for new message, append to old messages
         if (data.type === 'message') {
+          // Check if messages card is scrolled to the bottom
+          const shouldScroll = messageCard.scrollTop === messageCard.scrollHeight - messageCard.clientHeight ? true : false;
+
           setMessages(prev => [...prev, data]);
+
+          //only change scroll pos if user hasn't scrolled to another pos
+          if (shouldScroll) messageCard.scrollTo({top: messageCard.scrollHeight});
         }
         // Room exists already
         else if (!data.type) {
           setMessages(data);
+          // Scroll to most recent messages
+          messageCard.scrollTo({top: messageCard.scrollHeight});
         }
         // TODO: Handle errors and info type
       };
@@ -69,7 +79,7 @@ export default function Room({ user, setUser, setJoined }) {
   }
 
   return (
-    <div className='container py-3'>
+    <div className='container py-3 room'>
       {
         !user &&
         <form onSubmit={handleSubmitUser} className='col-md-6 offset-md-3'>
@@ -82,13 +92,31 @@ export default function Room({ user, setUser, setJoined }) {
       }
       {
         user &&
-        <form onSubmit={handleSubmitMsg} className='col-md-6 offset-md-3'>
-          <div className='input-group'>
-            <input type='text' className='form-control' id='msg' required />
-            <button type='submit' className='btn btn-success' >Send</button>
+        <div className='col-md-6 offset-md-3'>
+          <div className='card messages mb-3'>
+            <div className="card-body">
+              {messages.map((val, index) => {
+                console.log(val.user, user)
+                if (val.user === user) {
+                  return <p key={index} className='text-end'><i>{val.message}</i></p>
+                }
+
+                return (
+                  <p key={index}>
+                    <b>{val.user}: </b>
+                    {val.message}
+                  </p>
+                );
+              })}
+            </div>
           </div>
-          {JSON.stringify(messages)}
-        </form>
+          <form onSubmit={handleSubmitMsg}>
+            <div className='input-group'>
+              <input type='text' className='form-control' id='msg' required />
+              <button type='submit' className='btn btn-success' >Send</button>
+            </div>
+          </form>
+        </div>
       }
     </div>
   );
