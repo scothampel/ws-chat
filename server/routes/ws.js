@@ -34,15 +34,26 @@ router.ws('/:id', (ws, req) => {
 
   const room = rooms[id];
   // Push client socket to room.clients and store index
-  const clientIndex = room.clients.push({user: '', socket: ws}) - 1;
+  const clientIndex = room.clients.push({ user: '', socket: ws }) - 1;
 
   // Message handler
   ws.on('message', msg => {
     // First message is username
     if (user === null) {
-      user = msg
-      // Send current room messages
-      ws.send(JSON.stringify(room.messages));
+      // Check if username does not exist
+      // Checks messages instead of clients so username can't be "spoofed" or stolen
+      if (room.messages.filter(message => message.user === user).length === 0) {
+        // Store username
+        user = msg
+        room.clients[clientIndex].user = msg;
+        // Send current room messages
+        ws.send(JSON.stringify(room.messages));
+      }
+      // Username exists
+      else {
+        ws.send(JSON.stringify({ type: 'error', message: 'Username already in use' }));
+        ws.close();
+      }
     }
     // Push message to messages array and send list back
     else {
