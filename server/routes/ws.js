@@ -13,7 +13,7 @@ router.ws('/:id', (ws, req) => {
   let user = null;
   // Check if room exists
   if (rooms[id]) {
-    ws.send(JSON.stringify({ type: 'exists', message: `Room exists. Identifier: ${id}` }));
+    ws.send(JSON.stringify({ type: 'info', message: `Room exists. Identifier: ${id}` }));
   }
   else {
     // Check if max rooms reached
@@ -27,7 +27,7 @@ router.ws('/:id', (ws, req) => {
     }
     // Max rooms already reached
     else {
-      ws.send(JSON.stringify({ type: 'info', error: 'Maximum number of rooms reached' }));
+      ws.send(JSON.stringify({ type: 'error', message: 'Maximum number of rooms reached' }));
       ws.close();
     }
   }
