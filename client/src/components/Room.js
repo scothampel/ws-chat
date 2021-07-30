@@ -59,22 +59,22 @@ export default function Room({ user, setUser, setJoined }) {
   }, [user, setJoined])
 
   // Set username
-  const handleSubmit = e => {
+  const handleSubmitUser = e => {
     e.preventDefault();
     setUser(e.target[0].value);
   }
 
   // Temp ws send handler
-  const handleClick = e => {
+  const handleSubmitMsg = e => {
     e.preventDefault()
-    wsRef.current.send(e.target[0].value)
+    wsRef.current.send(e.target[0].value);
   }
 
   return (
     <div className='container py-3'>
       {
         !user &&
-        <form onSubmit={handleSubmit} className='col-md-6 offset-md-3'>
+        <form onSubmit={handleSubmitUser} className='col-md-6 offset-md-3'>
           <div className="form-group mb-3">
             <label htmlFor='user' >Username</label>
             <input type='text' className='form-control' id='user' required />
@@ -84,9 +84,11 @@ export default function Room({ user, setUser, setJoined }) {
       }
       {
         user &&
-        <form onSubmit={handleClick}>
-          <input type='text' className='form-control' id='msg' required />
-          <button type='submit' className='btn btn-success' >Send</button>
+        <form onSubmit={handleSubmitMsg} className='col-md-6 offset-md-3'>
+          <div className='input-group'>
+            <input type='text' className='form-control' id='msg' required />
+            <button type='submit' className='btn btn-success' >Send</button>
+          </div>
           {JSON.stringify(messages)}
         </form>
       }
