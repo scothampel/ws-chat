@@ -96,7 +96,6 @@ export default function Room({ user, setUser, setJoined }) {
           <div className='card messages mb-3'>
             <div className="card-body">
               {messages.map((val, index) => {
-                console.log(val.user, user)
                 if (val.user === user) {
                   return <p key={index} className='text-end'><i>{val.message}</i></p>
                 }
