@@ -8,25 +8,34 @@ export default function Room({ user, setUser, setJoined }) {
   const { id } = useParams();
 
   useEffect(() => {
+    // Allow room changes
     setJoined(false)
-
+    // Formatted webSocket url
     const wsUrl = window.location.href.replace('http', 'ws').replace('3000', '3001');
 
+    // Check if username is set
     if (user) {
+      // Open webSocket
       wsRef.current = new WebSocket(wsUrl);
 
       wsRef.current.onopen = e => {
+        // Send username as first message
         wsRef.current.send(user);
       };
 
       wsRef.current.onmessage = msg => {
+        // All messages are JSON encoded
         const data = JSON.parse(msg.data);
-        if (data.user) {
+        // TODO: Maybe make switch
+        // Check for new message, append to old messages
+        if (data.type === 'message') {
           setMessages(prev => [...prev, data]);
         }
-        else {
+        // Room exists already
+        else if (data.type === 'exists') {
           setMessages(data);
         }
+        // TODO: Handle errors and info type
       };
 
       wsRef.current.onclose = e => {
@@ -38,18 +47,23 @@ export default function Room({ user, setUser, setJoined }) {
       };
     }
 
+    // Cleanup
     return () => {
+      // Check for established webSocket
       if (wsRef.current) {
+        // Close webSocket 
         wsRef.current.close();
       }
     };
   }, [user, setJoined])
 
+  // Set username
   const handleSubmit = e => {
     e.preventDefault();
     setUser(e.target[0].value);
   }
 
+  // Temp ws send handler
   const handleClick = e => {
     e.preventDefault()
     wsRef.current.send(e.target[0].value)
