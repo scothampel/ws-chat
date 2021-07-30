@@ -55,7 +55,7 @@ router.ws('/:id', (ws, req) => {
         ws.close();
       }
     }
-    // Push message to messages array and send list back
+    // Push message to messages array and send new message back
     else {
       // Push message to array
       room.messages.push({ user, message: msg });
