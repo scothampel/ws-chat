@@ -34,18 +34,22 @@ router.ws('/:id', (ws, req) => {
 
   const room = rooms[id];
   // Push client socket to room.clients and store index
-  const clientIndex = room.clients.push(ws) - 1;
+  const clientIndex = room.clients.push({user: '', socket: ws}) - 1;
 
   // Message handler
   ws.on('message', msg => {
     // First message is username
     if (user === null) {
       user = msg
+      // Send current room messages
+      ws.send(JSON.stringify(room.messages));
     }
     // Push message to messages array and send list back
     else {
+      // Push message to array
       room.messages.push({ user, message: msg });
-      ws.send(JSON.stringify(room.messages));
+      // Send message to all clients
+      room.clients.forEach(({ socket }) => socket.send(JSON.stringify({ user, message: msg })));
     }
   });
 
