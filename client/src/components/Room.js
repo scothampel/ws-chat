@@ -74,7 +74,7 @@ export default function Room({ user, setUser, setJoined }) {
     setUser(e.target[0].value);
   }
 
-  // Temp ws send handler
+  // Send message
   const handleSubmitMsg = e => {
     e.preventDefault()
     wsRef.current.send(e.target[0].value);
